@@ -3,9 +3,9 @@ from robopy.robots.franka import Franka
 from robopy.hardware.scale import DymoScale, ScaleObserver
 from robopy.observers import RobotObserver
 from robopy.recording import Recorder, WaitingToEnd, WaitingToStart
-from robopy.trajectory import GoToTrajectory, LoadTrajectory
+from robopy.trajectory import GoToTrajectory, LoadTrajectory, ExponentialSmoothing
 from robopy.user_interaction import yn_question, press_enter
-import time
+import time, rospy
 
 
 def grasp_glass(franka: Franka):
@@ -24,11 +24,16 @@ def play_pouring(id, scale_observer, franka):
     press_enter()
 
     trajectory = LoadTrajectory("dataset/trajectory_%d.npy" % id)
+    # es = ExponentialSmoothing(0.4)
+    # trajectory = es.smooth(trajectory)
     recorded_weight = np.load("dataset/weight_%d.npy" % id)
 
     init_trajectory = trajectory.get_init_trajectory(5)
     franka.go_to(init_trajectory, "arm")
+    start = rospy.get_time()
+    print("time: %s" % start)
     franka.go_to(trajectory, "arm")
+    print("duration: %s" % (rospy.get_time() - start))
 
     time.sleep(3)
     current_weight = scale_observer("DYMO_WEIGHT")["DYMO_WEIGHT"]

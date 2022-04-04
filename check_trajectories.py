@@ -1,6 +1,6 @@
 import numpy as np
 from robopy.robots.franka import Franka
-from robopy.trajectory import LoadTrajectory
+from robopy.trajectory import LoadTrajectory, ExponentialSmoothing
 from robopy.user_interaction import press_enter
 import matplotlib.pyplot as plt
 
@@ -24,6 +24,10 @@ if __name__ == "__main__":
 
         fig, axis = plt.subplots(len(franka.groups["arm_gripper"].refs))
         trajectory.plot(axis)
+
+        # es = ExponentialSmoothing(0.2)
+        # trajectory = es.smooth(trajectory)
+        # trajectory.plot(axis)
         plt.savefig("dataset/traj_plot_%d.jpg" % id)
 
 

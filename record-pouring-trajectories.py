@@ -78,6 +78,7 @@ if __name__ == "__main__":
     for id in range(id_min, id_min + n_demos):
         print("STARTING DEMO %d (%d of %d)" % (id, id - id_min + 1, n_demos))
         trajectory, weight = record_puring(robot_recorder, scale_observer)
+        robot_recorder.reset()
         trajectory.save("dataset/trajectory_%d.npy" % id)
         np.save("dataset/weight_%d.npy" % id, weight)
         print("DEMO SAVED")
